@@ -34,7 +34,6 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('email', models.EmailField(db_index=True, max_length=254, unique=True, verbose_name='Электронная почта')),
-                ('confirmation_code', models.CharField(blank=True, editable=False, max_length=99, null=True, unique=True, verbose_name='Код подтверждения')),
                 ('bio', models.TextField(blank=True, verbose_name='О себе')),
                 ('role', models.CharField(choices=[('user', 'User'), ('moderator', 'Moderator'), ('admin', 'Admin')], default='user', max_length=30, verbose_name='Роль')),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),

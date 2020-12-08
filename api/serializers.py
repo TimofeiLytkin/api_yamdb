@@ -11,6 +11,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'username', 'bio', 'email', 'role')
 
 
+class ConfirmationCodeSerializer(serializers.Serializer):
+    """Класс для преобразования данных при получении токена."""
+
+    email = serializers.EmailField(required=True)
+    confirmation_code = serializers.CharField(required=True)
+
+
 class CategorySerializer(serializers.ModelSerializer):
     """Класс для преобразования данных категории."""
 

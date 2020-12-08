@@ -21,14 +21,6 @@ class User(AbstractUser):
         db_index=True,
         verbose_name='Электронная почта'
     )
-    confirmation_code = models.CharField(
-        max_length=99,
-        blank=True,
-        null=True,
-        editable=False,
-        unique=True,
-        verbose_name='Код подтверждения'
-    )
     bio = models.TextField(blank=True, verbose_name='О себе')
     role = models.CharField(
         max_length=30,

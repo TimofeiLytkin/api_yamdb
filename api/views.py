@@ -16,9 +16,9 @@ from api.filters import TitleFilter
 from api.models import Category, Comment, Genre, Review, Title, User
 from api.permissions import (AdminPermission, ModeratorPermission,
                              ObjectAuthorPermission, ReadOnlyPermission)
-from api.serializers import (CategorySerializer, CommentSerializer,
-                             GenreSerializer, ReviewSerializer,
-                             TitleSerializerCreateAndUpdate,
+from api.serializers import (CategorySerializer, ConfirmationCodeSerializer,
+                             CommentSerializer, GenreSerializer,
+                             ReviewSerializer, TitleSerializerCreateAndUpdate,
                              TitleSerializerGet, UserSerializer)
 
 
@@ -28,8 +28,9 @@ def send_email(request):
     """Метод для отправки кода подтверждения на почту."""
     serializer = UserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.data['email']
-    user = User.objects.get_or_create(email=email)
+    email = serializer.data.get('email')
+    username = serializer.data.get('username')
+    user, created = User.objects.get_or_create(email=email, username=username)
     confirmation_code = default_token_generator.make_token(user)
     send_mail(
         'Confirmation code from Yamdb',
@@ -43,13 +44,14 @@ def send_email(request):
 
 class TokenGetView(views.APIView):
     """Класс для получения токена по коду подтверждения."""
+    permission_classes = [permissions.AllowAny]
 
-    @permission_classes([permissions.AllowAny])
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
+    @staticmethod
+    def post(request):
+        serializer = ConfirmationCodeSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        confirmation_code = serializer.data['confirmation_code']
-        user_email = serializer.data['email']
+        confirmation_code = serializer.data.get('confirmation_code')
+        user_email = serializer.data.get('email')
         user = get_object_or_404(User, email=user_email)
         if default_token_generator.check_token(user, confirmation_code):
             token = AccessToken.for_user(user)
